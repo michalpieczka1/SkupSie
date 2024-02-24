@@ -34,6 +34,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,8 +58,12 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
+import com.skupsie.uiStates.LoginPageUiState
+import com.skupsie.viewmodels.LoginPageViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +86,7 @@ class MainActivity : ComponentActivity() {
             ){
                 SkupSieTheme {
                     // A surface container using the 'background' color from the theme
-                    LoginPage()
+                    LoginPage(loginPageViewModel = LoginPageViewModel())
                 }
             }
         }
@@ -90,8 +95,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoginPage(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loginPageViewModel: LoginPageViewModel = viewModel()
 ) {
+
+    val loginPageUiState by loginPageViewModel.uiState.collectAsState()
+
     //to na dole to background image
     Box(
         Modifier
@@ -127,7 +136,12 @@ fun LoginPage(
 
             Column(horizontalAlignment = Alignment.End) {
 
-            MainTextField(gradientColor = DarkPurple, "Email", keyboardType = KeyboardType.Email)
+            MainTextField(gradientColor = DarkPurple,
+                label = "Email",
+                keyboardType = KeyboardType.Email,
+                value =  loginPageUiState.emailValue,
+                onValueChange = loginPageViewModel.onEmailChange(it)
+            )
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -240,15 +254,14 @@ fun MainTextField(
     gradientColor: Color, label: String,
     modifier: Modifier = Modifier,
     trailingIcon: ImageVector? = null,
-    keyboardType: KeyboardType? = null
+    keyboardType: KeyboardType? = null,
+    value: String,
+    onValueChange: () -> Unit
 ) {
-    var value by remember {
-        mutableStateOf("")
-    }
 
     TextField(
         value = value,
-        onValueChange = { value = it },
+        onValueChange = { onValueChange },
         label = { Text(text = label, style = MaterialTheme.typography.labelSmall) },
         shape = RoundedCornerShape(8.dp),
         singleLine = true,

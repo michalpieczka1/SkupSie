@@ -6,13 +6,14 @@ import com.skupsie.uiStates.LoginPageUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class LoginPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(LoginPageUiState())
     val uiState:StateFlow<LoginPageUiState> = _uiState.asStateFlow()
 
     fun onEmailChange(email: String){
-        _uiState.value = LoginPageUiState(emailValue = email)
+        _uiState.update { it.copy(emailValue = email) }
     }
     fun onPasswordChange(password: String){
         _uiState.value = LoginPageUiState(passwordValue = password)
