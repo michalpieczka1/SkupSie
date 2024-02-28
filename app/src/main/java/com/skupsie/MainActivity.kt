@@ -58,11 +58,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
-import com.skupsie.uiStates.LoginPageUiState
 import com.skupsie.viewmodels.LoginPageViewModel
 
 class MainActivity : ComponentActivity() {
@@ -136,17 +134,23 @@ fun LoginPage(
 
             Column(horizontalAlignment = Alignment.End) {
 
-            MainTextField(gradientColor = DarkPurple,
+            MainTextField(
+                gradientColor = DarkPurple,
                 label = "Email",
                 keyboardType = KeyboardType.Email,
-                value =  loginPageUiState.emailValue,
-                onValueChange = loginPageViewModel.onEmailChange(it)
+                value = loginPageViewModel.email,
+                onValueChange = { email -> loginPageViewModel.onEmailChange(email) },
+                isError = !loginPageUiState.isEmailValid
             )
 
             Spacer(modifier = Modifier.height(30.dp))
 
-                PasswordTextField(shadowColor = DarkPurple,
-                    label = "Hasło"
+                PasswordTextField(
+                    shadowColor = DarkPurple,
+                    label = "Hasło",
+                    value = loginPageViewModel.password,
+                    onValueChange = { password -> loginPageViewModel.onPasswordChange(password) },
+                    isError = !loginPageUiState.isPasswordValid
                 )
                 TextButton(onClick = { /*TODO nav to reset password page*/ }) {
                     Text(text = "Zapomniałeś hasła?",
@@ -255,13 +259,14 @@ fun MainTextField(
     modifier: Modifier = Modifier,
     trailingIcon: ImageVector? = null,
     keyboardType: KeyboardType? = null,
-    value: String,
-    onValueChange: () -> Unit
+    value:String = "",
+    onValueChange: (String) -> Unit,
+    isError: Boolean = false
 ) {
 
     TextField(
         value = value,
-        onValueChange = { onValueChange },
+        onValueChange = onValueChange,
         label = { Text(text = label, style = MaterialTheme.typography.labelSmall) },
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
@@ -285,7 +290,8 @@ fun MainTextField(
             }
         },
         keyboardOptions = if (keyboardType != null) KeyboardOptions(keyboardType = keyboardType)
-        else KeyboardOptions(keyboardType = KeyboardType.Text)
+        else KeyboardOptions(keyboardType = KeyboardType.Text),
+        isError = isError
     )
 }
 
@@ -294,11 +300,11 @@ fun MainTextField(
 fun PasswordTextField(
     shadowColor: Color,
     label: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    value:String = "",
+    onValueChange: (String) -> Unit,
+    isError: Boolean = false
 ) {
-    var value by remember {
-        mutableStateOf("")
-    }
 
     var isPasswordShown by remember {
         mutableStateOf(false)
@@ -306,7 +312,7 @@ fun PasswordTextField(
 
     TextField(
         value = value,
-        onValueChange = { value = it },
+        onValueChange = onValueChange,
         label = { Text(text = label, style = MaterialTheme.typography.labelSmall) },
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
