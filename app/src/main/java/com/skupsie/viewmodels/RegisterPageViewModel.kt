@@ -1,18 +1,19 @@
 package com.skupsie.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.skupsie.uiStates.LoginPageUiState
+import com.skupsie.uiStates.RegisterPageUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class LoginPageViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(LoginPageUiState())
-    val uiState:StateFlow<LoginPageUiState> = _uiState.asStateFlow()
+class RegisterPageViewModel() : ViewModel() {
+    private val _uiState = MutableStateFlow(RegisterPageUiState())
+    val uiState: StateFlow<RegisterPageUiState> = _uiState.asStateFlow()
 
     var email by mutableStateOf("")
         private set
@@ -29,7 +30,7 @@ class LoginPageViewModel : ViewModel() {
 
     private fun isEmailValid(email: String) {
         _uiState.update{ currentState ->
-            currentState.copy(isEmailValid = email.contains('@'))
+            currentState.copy(isEmailValid = email.contains('@')) //TODO exists in database
         }
     }
     private fun isPasswordValid(password: String) {
@@ -37,11 +38,8 @@ class LoginPageViewModel : ViewModel() {
             currentState.copy(isPasswordValid = password.length >= 6)
         }
     }
-    private val testTagDeleteLater = "michal" //TODO Delete later
-    fun forgotPasswordOnClick(){
-        //TODO NAV
-    }
-    fun loginOnClick(){
+
+    fun registerOnClick(){
         isEmailValid(email)
         isPasswordValid(password)
 
@@ -49,8 +47,8 @@ class LoginPageViewModel : ViewModel() {
             //TODO NAV
         }
     }
-    fun registerOnClick(){
-        //TODO NAV
-    }
 
+    fun loginOnClick(){
+            //TODO NAV
+    }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SkupSie</string>
+    <string name="password_text_label">Hasło</string>
+    <string name="login">Zaloguj się</string>
+    <string name="register">Stwórz konto</string>
+    <string name="forgot_password">Zapomniałeś hasła?</string>
+    <string name="forgot_password_title">Zapomniałeś hasła? Bez obaw! Podaj nam swój adres e-mail, a my wyślemy Ci wiadomość z unikalnym kodem do zresetowania hasła.</string>
+    <string name="send_code">Wyślij kod</string>
+    <string name="back">Wróć</string>
 </resources>
