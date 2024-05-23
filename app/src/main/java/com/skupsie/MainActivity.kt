@@ -11,13 +11,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.skupsie.screens.ForgotPasswordPage
-import com.skupsie.screens.LoginPage
-import com.skupsie.screens.RegisterPage
+import com.skupsie.screens.loginScreens.LoginApp
 import com.skupsie.ui.theme.SkupSieTheme
-import com.skupsie.viewmodels.ForgotPasswordViewModel
-import com.skupsie.viewmodels.LoginPageViewModel
-import com.skupsie.viewmodels.RegisterPageViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,9 +34,7 @@ class MainActivity : ComponentActivity() {
                 color = if(!isSystemInDarkTheme()) Color.White else Color(0xFF121212)
             ){
                 SkupSieTheme {
-//                    ForgotPasswordPage(forgotPasswordPageViewModel = ForgotPasswordViewModel())
-//                    RegisterPage(registerPageViewModel = RegisterPageViewModel())
-                    LoginPage(loginPageViewModel = LoginPageViewModel())
+                    LoginApp()
                 }
             }
         }

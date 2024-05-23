@@ -7,4 +7,5 @@
     <string name="forgot_password_title">Zapomniałeś hasła? Bez obaw! Podaj nam swój adres e-mail, a my wyślemy Ci wiadomość z unikalnym kodem do zresetowania hasła.</string>
     <string name="send_code">Wyślij kod</string>
     <string name="back">Wróć</string>
+    <string name="min_6_characters">(minimum 6 znaków)</string>
 </resources>

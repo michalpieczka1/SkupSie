@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import com.skupsie.screens.loginScreens.LoginScreens
 import com.skupsie.uiStates.LoginPageUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,29 +30,30 @@ class LoginPageViewModel : ViewModel() {
     }
 
     private fun isEmailValid(email: String) {
+        val isValid:Boolean = (email.contains('@') && email.isNotEmpty())
         _uiState.update{ currentState ->
-            currentState.copy(isEmailValid = email.contains('@'))
+            currentState.copy(isEmailValid = isValid)
         }
     }
     private fun isPasswordValid(password: String) {
+        val isValid:Boolean = (password.length >= 6 && password.isNotEmpty())
         _uiState.update { currentState ->
-            currentState.copy(isPasswordValid = password.length >= 6)
+            currentState.copy(isPasswordValid = isValid)
         }
     }
-    private val testTagDeleteLater = "michal" //TODO Delete later
-    fun forgotPasswordOnClick(){
-        //TODO NAV
+    fun forgotPasswordOnClick(navController: NavController) {
+        navController.navigate(LoginScreens.ForgotPassword.name)
     }
-    fun loginOnClick(){
+    fun loginOnClick(navController: NavController){
         isEmailValid(email)
         isPasswordValid(password)
 
         if(uiState.value.isEmailValid && uiState.value.isPasswordValid){
-            //TODO NAV
+            navController.navigate(LoginScreens.Login.name)//TODO change to main page
         }
     }
-    fun registerOnClick(){
-        //TODO NAV
+    fun registerOnClick(navController: NavController){
+        navController.navigate(LoginScreens.Register.name)
     }
 
 }

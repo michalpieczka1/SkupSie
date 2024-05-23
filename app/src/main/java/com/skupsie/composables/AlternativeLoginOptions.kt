@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,10 +30,10 @@ fun AlternativeLoginOptions(){
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Divider(
+        HorizontalDivider(
+            modifier = Modifier.weight(0.40f),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(0.40f)
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "Lub",
@@ -44,10 +44,10 @@ fun AlternativeLoginOptions(){
                 .padding(horizontal = 8.dp)
                 .weight(0.20f)
         )
-        Divider(
+        HorizontalDivider(
+            modifier = Modifier.weight(0.40f),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(0.40f)
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
     Spacer(modifier = Modifier.height(16.dp))

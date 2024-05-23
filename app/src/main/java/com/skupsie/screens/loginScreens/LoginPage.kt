@@ -1,4 +1,4 @@
-package com.skupsie.screens
+package com.skupsie.screens.loginScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -28,6 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.skupsie.R
 import com.skupsie.composables.AlternativeLoginOptions
 import com.skupsie.composables.MainButton
@@ -38,10 +40,12 @@ import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
 import com.skupsie.viewmodels.LoginPageViewModel
 
+
 @Composable
 fun LoginPage(
     modifier: Modifier = Modifier,
-    loginPageViewModel: LoginPageViewModel = viewModel()
+    loginPageViewModel: LoginPageViewModel = viewModel(),
+    navController: NavController = rememberNavController()
 ) {
 
     val loginPageUiState by loginPageViewModel.uiState.collectAsState()
@@ -94,13 +98,15 @@ fun LoginPage(
 
                 PasswordTextField(
                     shadowColor = DarkPurple,
-                    label = stringResource(R.string.password_text_label) + " (minimum 6 znaków)",
+                    label = stringResource(R.string.password_text_label) ,
                     value = loginPageViewModel.password,
                     onValueChange = { password -> loginPageViewModel.onPasswordChange(password) },
                     isError = !loginPageUiState.isPasswordValid
                 )
 
-                TextButton(onClick = { loginPageViewModel.forgotPasswordOnClick() }) {
+                TextButton(onClick = {
+                    loginPageViewModel.forgotPasswordOnClick(navController)
+                } ) {
                     Text(text = stringResource(R.string.forgot_password),
                         style = MaterialTheme.typography.labelSmall
                     )
@@ -112,16 +118,14 @@ fun LoginPage(
 
             MainGradientButton(
                 btnText = stringResource(R.string.login),
-                onClick = {
-                    loginPageViewModel.loginOnClick()
-                }
+                onClick = { loginPageViewModel.loginOnClick(navController) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             MainButton(
                 btnText = stringResource(R.string.register),
-                onClick = {loginPageViewModel.registerOnClick()} //TODO nav do register page a nie to
+                onClick = { loginPageViewModel.registerOnClick(navController) }//TODO nav do register page a nie to
             )
 
             Spacer(modifier = Modifier.height(16.dp))

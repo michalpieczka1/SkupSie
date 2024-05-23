@@ -1,4 +1,4 @@
-package com.skupsie.screens
+package com.skupsie.screens.loginScreens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -27,6 +27,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.skupsie.R
 import com.skupsie.composables.AlternativeLoginOptions
 import com.skupsie.composables.MainButton
@@ -35,13 +37,13 @@ import com.skupsie.composables.MainTextField
 import com.skupsie.composables.PasswordTextField
 import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
-import com.skupsie.uiStates.RegisterPageUiState
 import com.skupsie.viewmodels.RegisterPageViewModel
 
 @Composable
 fun RegisterPage(
     modifier: Modifier = Modifier,
-    registerPageViewModel: RegisterPageViewModel = viewModel()
+    registerPageViewModel: RegisterPageViewModel = viewModel(),
+    navController: NavController = rememberNavController()
 ) {
 
     val registerPageUiState by registerPageViewModel.uiState.collectAsState()
@@ -94,7 +96,7 @@ fun RegisterPage(
 
                 PasswordTextField(
                     shadowColor = DarkPurple,
-                    label = stringResource(R.string.password_text_label),
+                    label = stringResource(R.string.password_text_label)+" "+stringResource(R.string.min_6_characters),
                     value = registerPageViewModel.password,
                     onValueChange = { password -> registerPageViewModel.onPasswordChange(password) },
                     isError = !registerPageUiState.isPasswordValid
@@ -107,7 +109,7 @@ fun RegisterPage(
             MainGradientButton(
                 btnText = stringResource(R.string.register),
                 onClick = {
-                    registerPageViewModel.registerOnClick()
+                    registerPageViewModel.registerOnClick(navController)
                 }
             )
 
@@ -115,7 +117,7 @@ fun RegisterPage(
 
             MainButton(
                 btnText = stringResource(R.string.login),
-                onClick = {registerPageViewModel.loginOnClick()} //TODO nav do login page a nie to
+                onClick = {registerPageViewModel.loginOnClick(navController)}
             )
 
             Spacer(modifier = Modifier.height(16.dp))

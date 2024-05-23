@@ -1,17 +1,18 @@
 package com.skupsie.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
+import com.skupsie.screens.loginScreens.LoginScreens
 import com.skupsie.uiStates.RegisterPageUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class RegisterPageViewModel() : ViewModel() {
+class RegisterPageViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterPageUiState())
     val uiState: StateFlow<RegisterPageUiState> = _uiState.asStateFlow()
 
@@ -39,16 +40,17 @@ class RegisterPageViewModel() : ViewModel() {
         }
     }
 
-    fun registerOnClick(){
+    fun registerOnClick(navController: NavController){
         isEmailValid(email)
         isPasswordValid(password)
 
         if(uiState.value.isEmailValid && uiState.value.isPasswordValid){
-            //TODO NAV
+            //TODO Add to database
+            navController.navigate(LoginScreens.Login.name)
         }
     }
 
-    fun loginOnClick(){
-            //TODO NAV
+    fun loginOnClick(navController: NavController){
+            navController.navigate(LoginScreens.Login.name)
     }
 }

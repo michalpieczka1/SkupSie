@@ -1,4 +1,4 @@
-package com.skupsie.screens
+package com.skupsie.screens.loginScreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewFontScale
@@ -29,6 +26,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.skupsie.R
 import com.skupsie.composables.MainButton
 import com.skupsie.composables.MainGradientButton
@@ -39,7 +38,8 @@ import com.skupsie.viewmodels.ForgotPasswordViewModel
 @Composable
 fun ForgotPasswordPage(
     modifier: Modifier = Modifier,
-    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel()
+    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel(),
+    navController:NavController = rememberNavController()
 ){
     val forgotPasswordUiState by forgotPasswordPageViewModel.uiState.collectAsState()
     Box(
@@ -55,7 +55,7 @@ fun ForgotPasswordPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal = 32.dp)
         ) {
-            Box(){
+            Box {
                 Text(
                     text = stringResource(R.string.forgot_password_title),
                     color = MaterialTheme.colorScheme.background,
@@ -101,7 +101,7 @@ fun ForgotPasswordPage(
 
             MainButton(
                 btnText = stringResource(R.string.back),
-                onClick = {forgotPasswordPageViewModel.backOnClick()}
+                onClick = {forgotPasswordPageViewModel.backOnClick(navController)}
             )
         }
     }
