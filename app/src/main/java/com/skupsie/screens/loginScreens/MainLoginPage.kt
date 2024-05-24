@@ -24,7 +24,7 @@ enum class LoginScreens{
 
 @Composable
 fun LoginApp(
-    navController:  NavHostController = rememberNavController()
+    navController:  NavHostController = rememberNavController(),
 ){
     NavHost(
         navController = navController,

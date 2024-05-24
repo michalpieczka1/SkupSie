@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import com.skupsie.data.UserRepository
 import com.skupsie.screens.loginScreens.LoginScreens
 import com.skupsie.uiStates.RegisterPageUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class RegisterPageViewModel : ViewModel() {
+class RegisterPageViewModel (private val userRepository: UserRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(RegisterPageUiState())
     val uiState: StateFlow<RegisterPageUiState> = _uiState.asStateFlow()
 
@@ -28,6 +29,8 @@ class RegisterPageViewModel : ViewModel() {
     fun onPasswordChange(input: String){
         password = input
     }
+
+
 
     private fun isEmailValid(email: String) {
         _uiState.update{ currentState ->
@@ -45,7 +48,13 @@ class RegisterPageViewModel : ViewModel() {
         isPasswordValid(password)
 
         if(uiState.value.isEmailValid && uiState.value.isPasswordValid){
-            //TODO Add to database
+//            viewModelScope.launch {
+//                withContext(Dispatchers.IO){
+//                    userRepository.insertUser(
+//                        User(name = "", email = email, password = password)
+//                    )
+//                }
+//            }
             navController.navigate(LoginScreens.Login.name)
         }
     }
