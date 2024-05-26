@@ -31,14 +31,14 @@ import com.skupsie.R
 import com.skupsie.composables.MainButton
 import com.skupsie.composables.MainGradientButton
 import com.skupsie.composables.MainTextField
-import com.skupsie.data.LoginAppViewModelProvider
+import com.skupsie.data.AppViewModelProvider
 import com.skupsie.ui.theme.SkupSieTheme
 import com.skupsie.viewmodels.ForgotPasswordViewModel
 
 @Composable
 fun ForgotPasswordPage(
     modifier: Modifier = Modifier,
-    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel(factory = LoginAppViewModelProvider.Factory),
+    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController:NavController = rememberNavController()
 ){
     val context = LocalContext.current

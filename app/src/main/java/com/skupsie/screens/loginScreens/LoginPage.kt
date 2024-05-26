@@ -37,7 +37,7 @@ import com.skupsie.composables.MainButton
 import com.skupsie.composables.MainGradientButton
 import com.skupsie.composables.MainTextField
 import com.skupsie.composables.PasswordTextField
-import com.skupsie.data.LoginAppViewModelProvider
+import com.skupsie.data.AppViewModelProvider
 import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
 import com.skupsie.viewmodels.LoginPageViewModel
@@ -46,7 +46,7 @@ import com.skupsie.viewmodels.LoginPageViewModel
 @Composable
 fun LoginPage(
     modifier: Modifier = Modifier,
-    loginPageViewModel: LoginPageViewModel = viewModel(factory = LoginAppViewModelProvider.Factory),
+    loginPageViewModel: LoginPageViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavController = rememberNavController()
 ) {
 

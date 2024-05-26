@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ForgotPasswordViewModel(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     var email by mutableStateOf("")

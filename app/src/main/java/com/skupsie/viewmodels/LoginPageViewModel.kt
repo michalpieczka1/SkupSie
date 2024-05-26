@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginPageViewModel(
-    val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginPageUiState())
     val uiState: StateFlow<LoginPageUiState> = _uiState.asStateFlow()
@@ -69,9 +69,15 @@ class LoginPageViewModel(
                     .first()
             }
             if (isUserInDb) {
-                withContext(Dispatchers.Main) {
-                    navController.navigate(LoginScreens.Login.name) //TODO navigate to main page not login
+
+                val currentUserId = withContext(Dispatchers.IO){
+                    userRepository.getUserByEmailAndPassword(email,password).first()?.id
                 }
+
+                withContext(Dispatchers.Main) {
+                    navController.navigate("${LoginScreens.Lessons.name}/${currentUserId}") //TODO navigate to main page not login
+                }
+
             } else {
                 _uiState.update { currentState ->
                     currentState.copy(isEmailValid = false)
