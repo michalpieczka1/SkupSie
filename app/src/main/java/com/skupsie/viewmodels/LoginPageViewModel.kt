@@ -1,20 +1,31 @@
 package com.skupsie.viewmodels
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.skupsie.R
+import com.skupsie.data.UserRepository
 import com.skupsie.screens.loginScreens.LoginScreens
 import com.skupsie.uiStates.LoginPageUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class LoginPageViewModel : ViewModel() {
+class LoginPageViewModel(
+    val userRepository: UserRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(LoginPageUiState())
-    val uiState:StateFlow<LoginPageUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<LoginPageUiState> = _uiState.asStateFlow()
 
     var email by mutableStateOf("")
         private set
@@ -22,37 +33,55 @@ class LoginPageViewModel : ViewModel() {
     var password by mutableStateOf("")
         private set
 
-    fun onEmailChange(input: String){
+    fun onEmailChange(input: String) {
         email = input
     }
-    fun onPasswordChange(input: String){
+
+    fun onPasswordChange(input: String) {
         password = input
     }
 
     private fun isEmailValid(email: String) {
-        val isValid:Boolean = (email.contains('@') && email.isNotEmpty())
-        _uiState.update{ currentState ->
+        val isValid: Boolean = (email.contains('@') && email.isNotEmpty())
+        _uiState.update { currentState ->
             currentState.copy(isEmailValid = isValid)
         }
     }
+
     private fun isPasswordValid(password: String) {
-        val isValid:Boolean = (password.length >= 6 && password.isNotEmpty())
+        val isValid: Boolean = (password.length >= 6 && password.isNotEmpty())
         _uiState.update { currentState ->
             currentState.copy(isPasswordValid = isValid)
         }
     }
+
     fun forgotPasswordOnClick(navController: NavController) {
         navController.navigate(LoginScreens.ForgotPassword.name)
     }
-    fun loginOnClick(navController: NavController){
+
+    fun loginOnClick(navController: NavController,context: Context) {
         isEmailValid(email)
         isPasswordValid(password)
 
-        if(uiState.value.isEmailValid && uiState.value.isPasswordValid){
-            navController.navigate(LoginScreens.Login.name)//TODO change to main page
+        viewModelScope.launch {
+            val isUserInDb = withContext(Dispatchers.IO){
+                userRepository.isUserInDatabaseByEmailAndPassword(email, password)
+                    .first()
+            }
+            if (isUserInDb) {
+                withContext(Dispatchers.Main) {
+                    navController.navigate(LoginScreens.Login.name) //TODO navigate to main page not login
+                }
+            } else {
+                _uiState.update { currentState ->
+                    currentState.copy(isEmailValid = false)
+                }
+                Toast.makeText(context,
+                    context.getString(R.string.account_doesnt_exist), Toast.LENGTH_SHORT).show()
+            }
         }
     }
-    fun registerOnClick(navController: NavController){
+    fun registerOnClick(navController: NavController) {
         navController.navigate(LoginScreens.Register.name)
     }
 

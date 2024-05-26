@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,16 +31,19 @@ import com.skupsie.R
 import com.skupsie.composables.MainButton
 import com.skupsie.composables.MainGradientButton
 import com.skupsie.composables.MainTextField
+import com.skupsie.data.LoginAppViewModelProvider
 import com.skupsie.ui.theme.SkupSieTheme
 import com.skupsie.viewmodels.ForgotPasswordViewModel
 
 @Composable
 fun ForgotPasswordPage(
     modifier: Modifier = Modifier,
-    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel(),
+    forgotPasswordPageViewModel: ForgotPasswordViewModel = viewModel(factory = LoginAppViewModelProvider.Factory),
     navController:NavController = rememberNavController()
 ){
-    val forgotPasswordUiState by forgotPasswordPageViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+
     Box(
         modifier
             .fillMaxSize()
@@ -86,7 +88,7 @@ fun ForgotPasswordPage(
 
             MainTextField(
                 label = "Email",
-                value = forgotPasswordUiState.email,
+                value = forgotPasswordPageViewModel.email,
                 onValueChange = {email -> forgotPasswordPageViewModel.onEmailChange(email)}
             )
 
@@ -94,7 +96,9 @@ fun ForgotPasswordPage(
 
             MainGradientButton(
                 btnText = stringResource(R.string.send_code),
-                onClick = { forgotPasswordPageViewModel.sendCodeOnClick() }
+                onClick = {
+                    forgotPasswordPageViewModel.sendCodeOnClick(context)
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))

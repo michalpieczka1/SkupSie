@@ -20,5 +20,14 @@ interface UserDao {
     suspend fun delete(user:User)
 
     @Query("SELECT * from users WHERE id=:id")
-    fun getUser(id:Int): Flow<User>
+    fun getUserById(id:Int): Flow<User?>
+
+    @Query("SELECT * from users WHERE email=:email")
+    fun getUserByEmail(email:String): Flow<User?>
+
+    @Query("SELECT * from users WHERE email=:email AND password=:password")
+    fun getUserByEmailAndPassword(email: String,password:String): Flow<User?>
+
+    @Query("SELECT isPremium from users WHERE id=:id")
+    fun getUserPremiumStatus(id: Int): Flow<UserPremiumStatus?>
 }

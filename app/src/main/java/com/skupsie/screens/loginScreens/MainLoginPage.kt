@@ -12,9 +12,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.skupsie.viewmodels.ForgotPasswordViewModel
-import com.skupsie.viewmodels.LoginPageViewModel
-import com.skupsie.viewmodels.RegisterPageViewModel
 
 enum class LoginScreens{
     Login,
@@ -34,21 +31,18 @@ fun LoginApp(
     ){
         composable(route = LoginScreens.Login.name){
             LoginPage(
-                loginPageViewModel = LoginPageViewModel(),
                 modifier = Modifier.fillMaxSize(),
                 navController = navController
             )
         }
         composable(route = LoginScreens.Register.name){
             RegisterPage(
-                registerPageViewModel = RegisterPageViewModel(),
                 modifier = Modifier.fillMaxSize(),
                 navController = navController
             )
         }
         composable(route = LoginScreens.ForgotPassword.name){
             ForgotPasswordPage(
-                forgotPasswordPageViewModel = ForgotPasswordViewModel(),
                 modifier =  Modifier.fillMaxSize(),
                 navController = navController
             )

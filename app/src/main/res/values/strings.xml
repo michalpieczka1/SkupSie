@@ -8,4 +8,6 @@
     <string name="send_code">Wyślij kod</string>
     <string name="back">Wróć</string>
     <string name="min_6_characters">(minimum 6 znaków)</string>
+    <string name="email_exists">Taki email już istnieje</string>
+    <string name="account_doesnt_exist">Takie konto nie istnieje</string>
 </resources>

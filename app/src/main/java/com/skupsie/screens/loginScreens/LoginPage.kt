@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,6 +37,7 @@ import com.skupsie.composables.MainButton
 import com.skupsie.composables.MainGradientButton
 import com.skupsie.composables.MainTextField
 import com.skupsie.composables.PasswordTextField
+import com.skupsie.data.LoginAppViewModelProvider
 import com.skupsie.ui.theme.DarkPurple
 import com.skupsie.ui.theme.SkupSieTheme
 import com.skupsie.viewmodels.LoginPageViewModel
@@ -44,12 +46,12 @@ import com.skupsie.viewmodels.LoginPageViewModel
 @Composable
 fun LoginPage(
     modifier: Modifier = Modifier,
-    loginPageViewModel: LoginPageViewModel = viewModel(),
+    loginPageViewModel: LoginPageViewModel = viewModel(factory = LoginAppViewModelProvider.Factory),
     navController: NavController = rememberNavController()
 ) {
 
     val loginPageUiState by loginPageViewModel.uiState.collectAsState()
-
+    val context = LocalContext.current
     //to na dole to background image
     Box(
         modifier
@@ -118,14 +120,14 @@ fun LoginPage(
 
             MainGradientButton(
                 btnText = stringResource(R.string.login),
-                onClick = { loginPageViewModel.loginOnClick(navController) }
+                onClick = { loginPageViewModel.loginOnClick(navController,context) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             MainButton(
                 btnText = stringResource(R.string.register),
-                onClick = { loginPageViewModel.registerOnClick(navController) }//TODO nav do register page a nie to
+                onClick = { loginPageViewModel.registerOnClick(navController) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
