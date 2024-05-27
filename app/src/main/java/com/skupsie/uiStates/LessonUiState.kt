@@ -8,5 +8,7 @@ data class LessonUiState(
     val lessons: List<Lesson>,
     val user: Flow<User?>,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isLessonShowed:Boolean = false,
+    val currentLesson:Lesson = Lesson("","",false, emptyList(),"","")
 )

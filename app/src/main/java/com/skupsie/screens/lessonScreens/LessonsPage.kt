@@ -1,15 +1,14 @@
 package com.skupsie.screens.lessonScreens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -36,14 +34,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,27 +49,27 @@ import com.skupsie.R
 import com.skupsie.data.AppViewModelProvider
 import com.skupsie.data.Lesson
 import com.skupsie.uiStates.LessonUiState
-import com.skupsie.viewmodels.LessonViewModel
+import com.skupsie.viewmodels.LessonPageViewModel
 
 @Composable
 fun LessonsPage(
     modifier: Modifier = Modifier,
-    lessonViewModel: LessonViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    lessonPageViewModel: LessonPageViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navController: NavController = rememberNavController(),
     currentUserId: Int
 ){
-    val lessonUiState = lessonViewModel.uiState.collectAsState()
+    val lessonUiState = lessonPageViewModel.uiState.collectAsState()
 
     LaunchedEffect(currentUserId) {
-        lessonViewModel.updateCurrentUser(currentUserId)
-        lessonViewModel.getLessons()
+        lessonPageViewModel.updateCurrentUser(currentUserId)
+        lessonPageViewModel.getLessons()
     }
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         when {
             lessonUiState.value.isLoading -> LoadingScreen(modifier = Modifier.fillMaxSize())
             lessonUiState.value.error != null -> ErrorScreen(lessonUiState = lessonUiState,modifier = Modifier.fillMaxSize())
-            lessonUiState.value.lessons.isNotEmpty() -> MainLessonScreen(lessonViewModel = lessonViewModel, modifier = Modifier.fillMaxSize())
+            lessonUiState.value.lessons.isNotEmpty() -> MainLessonScreen(lessonPageViewModel = lessonPageViewModel, modifier = Modifier.fillMaxSize())
             else -> Text("No data available")
         }
     }
@@ -84,10 +78,10 @@ fun LessonsPage(
 
 @Composable
 fun MainLessonScreen(
-    lessonViewModel: LessonViewModel,
+    lessonPageViewModel: LessonPageViewModel,
     modifier: Modifier = Modifier
 ) {
-    val lessonUiState = lessonViewModel.uiState.collectAsState()
+    val lessonUiState = lessonPageViewModel.uiState.collectAsState()
     val user by lessonUiState.value.user.collectAsState(initial = null)
 
     Box(
@@ -149,7 +143,20 @@ fun MainLessonScreen(
                 ) {
                     user?.let {
                         items(it.latestLessons){ lesson ->
-                            LessonCard(lesson = lesson, modifier = Modifier.weight(1f))
+                            LessonCard(
+                                lesson = lesson,
+                                modifier = Modifier.weight(1f),
+                                onClick = {
+                                    lessonPageViewModel.updateShowLesson(isLessonShowed = true)
+                                    lessonPageViewModel.updateCurrentLesson(lesson = lesson)
+                                }
+                            )
+                            if(lessonUiState.value.isLessonShowed){
+                                LessonDialog(
+                                    onDismiss = { lessonPageViewModel.updateShowLesson(false) },
+                                    lesson = lessonUiState.value.currentLesson
+                                )
+                            }
                         }
                     }
                 }
@@ -169,7 +176,21 @@ fun MainLessonScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(lessonUiState.value.lessons){ lesson ->
-                    LessonCard(lesson = lesson, modifier = Modifier.fillMaxWidth())
+                    LessonCard(
+                        lesson = lesson,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            lessonPageViewModel.updateShowLesson(isLessonShowed = true)
+                            lessonPageViewModel.updateCurrentLesson(lesson = lesson)
+                        }
+                    )
+                    if(lessonUiState.value.isLessonShowed){
+                        LessonDialog(
+                            onDismiss = { lessonPageViewModel.updateShowLesson(false) },
+                            lesson = lessonUiState.value.currentLesson
+                        )
+                    }
+
                 }
             }
         }
@@ -183,29 +204,27 @@ fun LessonCard(
     onClick: () -> Unit
 ){
     val cardSize:Dp = 192.dp
-    Card(modifier = if(!lesson.isPremium){
-        modifier
-            .size(cardSize)
+    Card(
+        modifier = if(!lesson.isPremium){
+            modifier
+                .size(cardSize)
+                .clickable(onClick = onClick)
     } else {
-        modifier
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .size(cardSize)
-            .border(
-                brush = Brush.verticalGradient(
-                    0.25f to MaterialTheme.colorScheme.secondary,
-                    1f to MaterialTheme.colorScheme.onTertiaryContainer
-                ),
-                width = 2.dp,
-                shape = RoundedCornerShape(8.dp)
-            )
+            modifier
+                .size(cardSize)
+                .border(
+                    brush = Brush.verticalGradient(
+                        0.25f to MaterialTheme.colorScheme.secondary,
+                        1f to MaterialTheme.colorScheme.onTertiaryContainer
+                    ),
+                    width = 2.dp,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .clickable(onClick = onClick)
     }
 
     )
     {
-        Button(onClick = onClick) {
             Column {
                 AsyncImage(
                     model = ImageRequest.Builder(context = LocalContext.current)
@@ -223,7 +242,6 @@ fun LessonCard(
                 )
             }
         }
-    }
 }
 
 @Composable
@@ -248,11 +266,4 @@ fun ErrorScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
     }
-}
-
-@Composable
-fun measureTextHeight(text: String, style: TextStyle): Dp {
-    val textMeasurer = rememberTextMeasurer()
-    val widthInPixels = textMeasurer.measure(text =  text, style = style).size.height
-    return with(LocalDensity.current) { widthInPixels.toDp() }
 }
