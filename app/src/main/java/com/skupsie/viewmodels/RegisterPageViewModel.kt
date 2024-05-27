@@ -71,10 +71,13 @@ class RegisterPageViewModel (
                         User(email = email, password = password)
                     )
                 }
+                val currentUserId = withContext(Dispatchers.IO){
+                    userRepository.getUserByEmailAndPassword(email,password).first()?.id
+                }
                 // Navigate on the main thread
                 //TODO navigate to main page not login
                 withContext(Dispatchers.Main) {
-                    navController.navigate(LoginScreens.Login.name)
+                    navController.navigate("${LoginScreens.Lessons.name}/${currentUserId}") //TODO navigate to main page not login
                 }
             } else if (isUserInDb) {
                 // Update UI state on the main thread

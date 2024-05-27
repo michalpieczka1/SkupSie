@@ -30,4 +30,5 @@ interface UserDao {
 
     @Query("SELECT isPremium from users WHERE id=:id")
     fun getUserPremiumStatus(id: Int): Flow<UserPremiumStatus?>
+
 }

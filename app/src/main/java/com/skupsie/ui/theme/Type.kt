@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.skupsie.R
 
@@ -51,6 +52,16 @@ val Typography = Typography(
         fontFamily = interFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-    )
+    ),
+    displaySmall = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.Light,
+        fontSize = 24.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = interFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp
+    ),
 
 )

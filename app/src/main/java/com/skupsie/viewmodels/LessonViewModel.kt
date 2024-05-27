@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,30 +28,37 @@ class LessonViewModel(
     private val _uiState = MutableStateFlow(LessonUiState(isLoading = true, user = currentUser, lessons = emptyList()))
     val uiState: StateFlow<LessonUiState> = _uiState.asStateFlow()
 
-    init{
-        getLessons()
-    }
-
     fun updateCurrentUser(id:Int){
         _uiState.update {
             it.copy(user = userRepository.getUserById(id))
         }
     }
 
+    init {
+        viewModelScope.launch {
+            currentUser.collect { user ->
+                _uiState.update { it.copy(user = flowOf(user)) }
+            }
+        }
+    }
 
     fun getLessons(){
         viewModelScope.launch {
-            _uiState.update{ currentState ->
+            _uiState.update { currentState ->
                 currentState.copy(isLoading = true)
             }
-            _uiState.update { currentState ->
-                try {
-                    val lessons = lessonsRepository.getLessons()
-                    currentState.copy(lessons = lessons)
-                } catch (e: IOException) {
-                    _uiState.value.copy(error = e.message, isLoading = false)
-                } catch (e: HttpException) {
-                    _uiState.value.copy(error = e.message, isLoading = false)
+            try {
+                val lessons = lessonsRepository.getLessons()
+                _uiState.update { currentState ->
+                    currentState.copy(lessons = lessons, isLoading = false, error = null)
+                }
+            } catch (e: IOException) {
+                _uiState.update { currentState ->
+                    currentState.copy(error = e.message, isLoading = false)
+                }
+            } catch (e: HttpException) {
+                _uiState.update { currentState ->
+                    currentState.copy(error = e.message, isLoading = false)
                 }
             }
         }
