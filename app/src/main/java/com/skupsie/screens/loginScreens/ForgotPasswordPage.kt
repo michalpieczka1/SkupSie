@@ -70,7 +70,6 @@ fun ForgotPasswordPage(
                     ),
                     minLines = 3,
                     textAlign = TextAlign.Center,
-
                     )
                 Text(
                     text = stringResource(R.string.forgot_password_title),

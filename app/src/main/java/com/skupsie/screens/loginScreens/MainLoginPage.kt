@@ -20,7 +20,8 @@ enum class LoginScreens{
     Login,
     Register,
     ForgotPassword,
-    Lessons
+    Lessons,
+    WelcomeNewUser
 }
 
 @Composable
@@ -65,5 +66,18 @@ fun LoginApp(
                 currentUserId = backStackEntry.arguments?.getInt("currentUserId")!!
             )
         }
+        composable(
+            LoginScreens.WelcomeNewUser.name+"/{currentUserId}",
+            arguments = listOf(
+                navArgument(name = "currentUserId"){
+                    type = NavType.IntType
+                }
+            )
+            ){backStackEntry ->
+                WelcomeNewUserScreen(
+                    currentUserId = backStackEntry.arguments?.getInt("currentUserId")!!,
+                    navController = navController
+                )
+            }
     }
 }

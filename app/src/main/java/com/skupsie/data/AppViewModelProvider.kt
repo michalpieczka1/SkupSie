@@ -8,6 +8,7 @@ import com.skupsie.viewmodels.ForgotPasswordViewModel
 import com.skupsie.viewmodels.LessonPageViewModel
 import com.skupsie.viewmodels.LoginPageViewModel
 import com.skupsie.viewmodels.RegisterPageViewModel
+import com.skupsie.viewmodels.WelcomeNewUserViewModel
 import kotlinx.coroutines.flow.emptyFlow
 
 object AppViewModelProvider {
@@ -26,6 +27,10 @@ object AppViewModelProvider {
 
         initializer {
             LessonPageViewModel(inventoryApplication().container.lessonsRepository,inventoryApplication().container.userRepository, currentUser = emptyFlow())
+        }
+
+        initializer {
+            WelcomeNewUserViewModel(inventoryApplication().container.userRepository)
         }
     }
 }

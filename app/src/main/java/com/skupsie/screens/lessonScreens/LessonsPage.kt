@@ -50,6 +50,7 @@ import com.skupsie.data.AppViewModelProvider
 import com.skupsie.data.Lesson
 import com.skupsie.uiStates.LessonUiState
 import com.skupsie.viewmodels.LessonPageViewModel
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun LessonsPage(
@@ -116,7 +117,7 @@ fun MainLessonScreen(
                 }
             }
             Text(
-                text = "👋 Witaj ${user?.email ?: "użytkowniku"}",
+                text = "👋 Witaj ${user?.name ?: "użytkowniku"}",
                 style = if(user?.isPremium == false){
                     MaterialTheme.typography.titleLarge
                 }else{
@@ -154,7 +155,8 @@ fun MainLessonScreen(
                             if(lessonUiState.value.isLessonShowed){
                                 LessonDialog(
                                     onDismiss = { lessonPageViewModel.updateShowLesson(false) },
-                                    lesson = lessonUiState.value.currentLesson
+                                    lesson = lessonUiState.value.currentLesson,
+                                    isUserPremiumStatus = it.isPremium
                                 )
                             }
                         }
@@ -187,7 +189,8 @@ fun MainLessonScreen(
                     if(lessonUiState.value.isLessonShowed){
                         LessonDialog(
                             onDismiss = { lessonPageViewModel.updateShowLesson(false) },
-                            lesson = lessonUiState.value.currentLesson
+                            lesson = lessonUiState.value.currentLesson,
+                            isUserPremiumStatus = user!!.isPremium
                         )
                     }
 

@@ -37,4 +37,5 @@ class OfflineUserRepository(private val userDao: UserDao) : UserRepository {
     override suspend fun deleteUser(user: User) = userDao.delete(user)
 
     override suspend fun updateUser(user: User) = userDao.update(user)
+    override suspend fun updateUserName(newName: String, userId: Int) = userDao.updateUser(newName, userId)
 }

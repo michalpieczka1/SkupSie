@@ -68,14 +68,26 @@ class LoginPageViewModel(
                 userRepository.isUserInDatabaseByEmailAndPassword(email, password)
                     .first()
             }
+
             if (isUserInDb) {
 
                 val currentUserId = withContext(Dispatchers.IO){
                     userRepository.getUserByEmailAndPassword(email,password).first()?.id
                 }
+                val user = withContext(Dispatchers.IO){
+                    currentUserId?.let { userRepository.getUserById(it) }
+                }
 
-                withContext(Dispatchers.Main) {
-                    navController.navigate("${LoginScreens.Lessons.name}/${currentUserId}") //TODO navigate to main page not login
+                if(user?.first()?.name == ""){
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("${LoginScreens.WelcomeNewUser.name}/${currentUserId}") //TODO navigate to main page not login
+                    }
+                }
+                else{
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("${LoginScreens.Lessons.name}/${currentUserId}") //TODO navigate to main page not login
+                    }
+
                 }
 
             } else {
